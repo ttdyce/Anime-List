@@ -16,3 +16,19 @@ jobs:
           echo Check $file
           cat $file | jq empty || return
         done
+  
+  pack: 
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Pack json data files into 1 file for hosting
+      working-directory: ./anime-data
+      run: jq -s 'add' anime*json > pack.json
+    - name: Commit and push pack.json
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'ttdyce@users.noreply.github.com'
+        git add anime-data/pack.json
+        git commit -am "Pack json data files"
+        git push
